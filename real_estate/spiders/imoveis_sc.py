@@ -5,7 +5,7 @@ from scrapy import Request
 import re
 
 class ImoveisSC(scrapy.Spider):
-    name = 'Imóveis SC'
+    name = 'ImóveisSC'
     _headers = { 
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0'
     }
@@ -18,7 +18,7 @@ class ImoveisSC(scrapy.Spider):
 
     def __init__(self) -> None:
         self._base_url = 'https://www.imoveis-sc.com.br/todas-cidades/comprar?page={}'
-        self._limit = 5
+        self._limit = 15
 
     def start_requests(self) -> Iterable[Request]:
         for page in range(1, self._limit + 1):
@@ -76,6 +76,6 @@ class ImoveisSC(scrapy.Spider):
                     continue
                 amount = amount.group()
 
-                facilities[facility_type] = amount
+                facilities[facility_type] = int(amount)
 
         return facilities

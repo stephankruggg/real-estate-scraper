@@ -10,7 +10,7 @@ class Olx(scrapy.Spider):
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0'
     }
 
-    _realties_css = 'div.olx-ad-card__content.olx-ad-card__content--horizontal.olx-ad-card__content--highlight'
+    _realties_css = 'div.olx-ad-card__content.olx-ad-card__content--horizontal'
     _details_css = 'div.olx-ad-card__top > div.olx-ad-card__details-ads'
     _location_css = 'div.olx-ad-card__bottom > div > div > div > p::text'
     _prices_css = 'div.olx-ad-card__top > div.olx-ad-card__details-price--horizontal'
@@ -18,7 +18,7 @@ class Olx(scrapy.Spider):
 
     def __init__(self) -> None:
         self._base_url = 'https://www.olx.com.br/imoveis/venda/estado-sc?o={}'
-        self._limit = 5
+        self._limit = 1
 
     def start_requests(self) -> Iterable[Request]:
         for page in range(1, self._limit + 1):
@@ -76,10 +76,6 @@ class Olx(scrapy.Spider):
                 if not amount:
                     continue
                 amount = amount.group()
-
-                extras = re.search(r'\bmais\b', facility, re.IGNORECASE)
-                if extras:
-                    amount += extras.group()
 
                 facilities[facility_type] = amount
 
