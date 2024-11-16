@@ -13,7 +13,31 @@ class RealEstatePipeline:
         )
 
         self._cursor = self._connection.cursor()
+
+        self._create_realties_table()
+
         logging.info("Database connection established")
+
+    def _create_realties_table(self):
+        create_realties_query = """
+            CREATE TABLE IF NOT EXISTS realties (
+                id BIGSERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                url TEXT NOT NULL,
+                price NUMERIC NOT NULL,
+                condominium NUMERIC,
+                iptu NUMERIC,
+                bedrooms INTEGER,
+                bathrooms INTEGER,
+                garage_spaces INTEGER,
+                square_meters INTEGER,
+                location TEXT NOT NULL,
+                city_id INTEGER,
+                neighborhood_id INTEGER,
+                FOREIGN KEY (city_id) REFERENCES cities(id),
+                FOREIGN KEY (neighborhood_id) REFERENCES neighborhoods(id)
+            );
+        """
 
     def process_item(self, item, spider):
         logging.info(f"Processing item: {item}")

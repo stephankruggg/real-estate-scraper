@@ -18,7 +18,7 @@ class ML(scrapy.Spider):
 
     def __init__(self) -> None:
         self._base_url = 'https://imoveis.mercadolivre.com.br/venda/santa-catarina/_Desde_{}_NoIndex_True'
-        self._limit = 40
+        self._limit = 146
 
     def start_requests(self) -> Iterable[Request]:
         for page in range(1, self._limit + 1, 48):

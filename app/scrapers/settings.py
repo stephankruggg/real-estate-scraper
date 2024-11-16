@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "real_estate"
+BOT_NAME = "scrapers"
 
-SPIDER_MODULES = ["real_estate.spiders"]
-NEWSPIDER_MODULE = "real_estate.spiders"
+SPIDER_MODULES = ["scrapers.spiders"]
+NEWSPIDER_MODULE = "scrapers.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "real_estate (+http://www.yourdomain.com)"
+#USER_AGENT = "scrapers (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "real_estate.middlewares.RealEstateSpiderMiddleware": 543,
+#    "scrapers.middlewares.RealEstateSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "real_estate.middlewares.RealEstateDownloaderMiddleware": 543,
+#    "scrapers.middlewares.RealEstateDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "real_estate.pipelines.RealEstatePipeline": 300,
+    "scrapers.pipelines.RealEstatePipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

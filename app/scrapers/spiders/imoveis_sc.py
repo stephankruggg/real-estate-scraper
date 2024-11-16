@@ -18,7 +18,7 @@ class ImoveisSC(scrapy.Spider):
 
     def __init__(self) -> None:
         self._base_url = 'https://www.imoveis-sc.com.br/todas-cidades/comprar?page={}'
-        self._limit = 15
+        self._limit = 100
 
     def start_requests(self) -> Iterable[Request]:
         for page in range(1, self._limit + 1):
