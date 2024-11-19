@@ -1,7 +1,13 @@
 from settings import DATABASE
 import psycopg2
+import locale
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+from wordcloud import WordCloud
 
 if __name__ == '__main__':
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
     print('Bem-vindo ao consultor de imóveis!')
 
     while True:
@@ -62,34 +68,62 @@ if __name__ == '__main__':
         realties_select_query += ' ORDER BY price ASC'
         cursor.execute(realties_select_query, tuple(select_params))
 
-        realties = cursor.fetchall()
+        realties = pd.DataFrame(
+            cursor.fetchall(),
+            columns=['ID', 'Postagem', 'URL', 'Preço', 'IPTU', 'Condomínio', '# Quartos', '# Banheiros', '# Vagas de garagem', 'Metragem quadrada', 'Localização', 'ID cidade', 'ID bairro']
+        )
 
         total_prices = 0
-        for i, realty in enumerate(realties):
+        for i, realty in realties.iterrows():
             print(f'Imóvel {i + 1}')
 
-            print(f'Postagem: {realty[1]}')
-            print(f'URL: {realty[2]}')
-            print(f'Preço: {realty[3]}')
+            print(f'Postagem: {realty['Postagem']}')
+            print(f'URL: {realty['URL']}')
+
+            print(f'Preço: R${locale.format_string('%.2f', realty['Preço'], grouping=True)}')
 
             if realty[4]:
-                print(f'IPTU: {realty[4]}')
+                print(f'IPTU: R${locale.format_string('%.2f', realty['IPTU'], grouping=True)}')
 
             if realty[5]:
-                print(f'Condomínio: {realty[5]}')
+                print(f'Condomínio: R${locale.format_string('%.2f', realty['Condomínio'], grouping=True)}')
 
             if realty[6]:
-                print(f'Número de quartos: {realty[6]}')
+                print(f'Número de quartos: {realty['# Quartos']}')
 
             if realty[7]:
-                print(f'Número de banheiros: {realty[7]}')
+                print(f'Número de banheiros: {realty['# Banheiros']}')
 
             if realty[8]:
-                print(f'Vagas de garagem: {realty[8]}')
+                print(f'Vagas de garagem: {realty['# Vagas de garagem']}')
 
             if realty[9]:
-                print(f'Metragem quadrada: {realty[9]}')
+                print(f'Metragem quadrada: {realty['Metragem quadrada']}')
+
+                print(f'Preço por metro quadrado: R${locale.format_string('%.2f', realty['Preço'] / realty['Metragem quadrada'], grouping=True)}')
 
             total_prices += realty[3]
 
-        print(f'Preço médio dos imóveis: R${total_prices // len(realties)}')
+        if not bedrooms:
+            plt.scatter(realties['# Quartos'], realties['Preço'])
+            plt.xlabel('Número de quartos')
+            plt.ylabel('Preço')
+            plt.savefig('imgs/preco_vs_#_quartos.png', bbox_inches='tight')
+            plt.close()
+
+        sns.histplot(data=realties, x='Preço', bins=30, kde=True)
+        max_y = int(plt.gca().get_ylim()[1])
+        plt.yticks(range(0, max_y + 1))
+        plt.ylabel('Quantidade')
+        plt.gca().xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'R${x / 1e6:.1f}M'))
+        plt.savefig('imgs/distribuicao_precos.png', bbox_inches='tight')
+        plt.close()
+
+        wordcloud = WordCloud().generate(' '.join(realties['Postagem']))
+        plt.imshow(wordcloud, interpolation='bilinear')
+        plt.axis('off')
+        plt.savefig('imgs/nuvem_de_palavras.png', bbox_inches='tight')
+        plt.close()
+
+        average_price = total_prices // len(realties)
+        print(f'Preço médio dos imóveis: R${locale.format_string('%.2f', average_price, grouping=True)}')
